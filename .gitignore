@@ -3,3 +3,10 @@
 ################################################################################
 
 /src/.vs/Easy
+/src/ApiGateways/OcelotApiGw/bin/Debug/netcoreapp3.1
+/src/Services/Identity.API/bin/Debug/netcoreapp3.1
+/src/Services/Identity.API/obj
+/src/Web/Standard/bin/Debug/netcoreapp3.1
+/src/Web/Standard/obj
+/src/ApiGateways/OcelotApiGw/obj
+/src/Services/User.API/User.Application/obj
