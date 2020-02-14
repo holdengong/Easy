@@ -13,7 +13,9 @@ namespace Identity.API.SeedWorks
         {
             using (var context = serviceProvider.GetRequiredService<ConfigurationDbContext>())
             {
+                context.Database.EnsureDeleted();
                 context.Database.Migrate();
+
                 if (!context.Clients.Any())
                 {
                     foreach (var client in Config.GetClients())

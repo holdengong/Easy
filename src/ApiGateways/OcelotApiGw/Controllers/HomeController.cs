@@ -6,11 +6,11 @@ namespace OcelotApiGw.Controllers
     public class HomeController : Controller
     {
         [Authorize]
-        [Route("/test")]
+        [Route("/")]
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok("result");
+            return Ok("this is secret data from gateway!");
         }
     }
 }

@@ -44,6 +44,19 @@ namespace Identity.API
 
             result.Add(new Client
             {
+                ClientId = "identity",
+                ClientName = "identity",
+                Description = "IdentityApi",
+                ClientSecrets = new List<Secret> { new Secret("secret".ToSha256()) },
+                AllowedGrantTypes = IdentityServer4.Models.GrantTypes.Code,
+                AllowedScopes = new List<string> { "api", StandardScopes.OfflineAccess, StandardScopes.OpenId, StandardScopes.Profile },
+                RedirectUris = new List<string> { "https://localhost:10001/signin-oidc" },
+                AllowOfflineAccess = true,
+                RequireConsent = false,
+            });
+
+            result.Add(new Client
+            {
                 ClientId = "easyshop_client",
                 ClientName = "easyshop_client",
                 Description = "网上商城C端",

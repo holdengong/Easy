@@ -21,28 +21,7 @@ namespace Admin.WebApp
         {
             services.AddControllersWithViews();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-               .AddCookie("Cookies")
-               .AddOpenIdConnect("oidc", options =>
-               {
-                   options.SignInScheme = "Cookies";
-
-                   options.Authority = "https://localhost:10001";
-
-                   options.ClientId = "admin";
-                   options.ClientSecret = "secret";
-                   options.ResponseType = ResponseTypes.Code;
-
-                   options.SaveTokens = true;
-                   options.GetClaimsFromUserInfoEndpoint = true;
-
-                   options.Scope.Add("api");
-                   options.Scope.Add("offline_access");
-               });
+            services.AddEasySso("admin");
 
             services.AddHttpClient();
         }

@@ -16,3 +16,11 @@
 /src/Assemblies/Easy.HttpClient/bin/Debug/netstandard2.0
 /src/Web/WebAdmin/bin/Debug/netcoreapp3.1
 /src/Web/WebAdmin/obj
+/src/Assemblies/EasyHttpClient/obj
+/src/Assemblies/EasyHttpClient/bin/Debug/netstandard2.0
+/src/Assemblies/EasySso/bin/Debug/netcoreapp3.1
+/src/Assemblies/EasySso/obj
+/src/Web/EasyAdmin/bin/Debug/netcoreapp3.1
+/src/Web/EasyAdmin/obj
+/src/Web/EasyShopClient/bin/Debug/netcoreapp3.1
+/src/Web/EasyShopClient/obj

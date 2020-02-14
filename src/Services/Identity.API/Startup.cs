@@ -34,6 +34,8 @@ namespace Identity.API
                 var identityServerBuilder = services.AddEasyIdentityServer(identityApiConfig);
                 services.AddEasyIdentityMySql(identityApiConfig, identityServerBuilder);
             }
+
+            services.AddEasySso("identity");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

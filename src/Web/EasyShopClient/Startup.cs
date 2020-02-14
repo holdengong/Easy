@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static IdentityModel.OidcConstants;
 
-namespace WebStandard
+namespace EasyShopClient.WebApp
 {
     public class Startup
     {
@@ -21,28 +21,7 @@ namespace WebStandard
         {
             services.AddControllersWithViews();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-               .AddCookie("Cookies")
-               .AddOpenIdConnect("oidc", options =>
-               {
-                   options.SignInScheme = "Cookies";
-
-                   options.Authority = "https://localhost:10001";
-
-                   options.ClientId = "standard";
-                   options.ClientSecret = "secret";
-                   options.ResponseType = ResponseTypes.Code;
-
-                   options.SaveTokens = true;
-                   options.GetClaimsFromUserInfoEndpoint = true;
-
-                   options.Scope.Add("api");
-                   options.Scope.Add("offline_access");
-               });
+            services.AddEasySsoWithCustomLoginPage("/user/login");
 
             services.AddHttpClient();
         }
