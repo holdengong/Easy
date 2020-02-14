@@ -1,32 +1,15 @@
-using Identity.API;
-using Identity.API.SeedWorks;
-using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Easy.Services.Sso
+namespace Admin.WebApp
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
-            ProcessSeedWork(host);
-            host.Run();
-        }
-
-        /// <summary>
-        /// 处理初始化工作
-        /// </summary>
-        /// <param name="host"></param>
-        private static void ProcessSeedWork(IHost host)
-        {
-            using (var scope = host.Services.CreateScope())
-            {
-                IdentityServerConfigurationData.Initialize(scope.ServiceProvider);
-            }
+            var builder = CreateHostBuilder(args).Build();
+            builder.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

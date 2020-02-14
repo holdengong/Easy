@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.API.Data
 {
-    public class CustomIdentityDbContext : IdentityDbContext
+    public class EasyIdentityDbContext : IdentityDbContext
     {
-        public CustomIdentityDbContext(DbContextOptions options)
+        public EasyIdentityDbContext(DbContextOptions options)
             :base(options)
         {
         }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using static IdentityModel.OidcConstants;
 
-namespace WebStandard
+namespace Admin.WebApp
 {
     public class Startup
     {
@@ -33,7 +33,7 @@ namespace WebStandard
 
                    options.Authority = "https://localhost:10001";
 
-                   options.ClientId = "standard";
+                   options.ClientId = "admin";
                    options.ClientSecret = "secret";
                    options.ResponseType = ResponseTypes.Code;
 

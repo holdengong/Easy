@@ -8,13 +8,15 @@
         public string Host { get; set; }
 
         /// <summary>
-        /// mysql连接字符串
+        /// mysql链接字符串
         /// </summary>
-        public string MySqlConnectionString { get; internal set; }
+        public DatabaseConnectionStrings MySql { get; set; }
+    }
 
-        /// <summary>
-        /// redis连接字符串
-        /// </summary>
-        public string RedisConnectionString { get; set; }
+    public class DatabaseConnectionStrings
+    {
+        public string IdentityDbContextConnectionString { get; set; }
+        public string ConfigurationDbContextConnectionString { get; set; }
+        public string PersistedGrantDbContextConnectionString { get; set; }
     }
 }

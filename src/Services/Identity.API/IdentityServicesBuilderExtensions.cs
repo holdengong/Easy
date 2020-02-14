@@ -7,28 +7,26 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IdentityServicesBuilderExtensions
     {
-        public static void AddIdentityInMemory(this IServiceCollection services, IdentityApiConfig identityApiConfig, IIdentityServerBuilder identityServerBuilder)
+        public static void AddEasyIdentityInMemory(this IServiceCollection services, IdentityApiConfig identityApiConfig, IIdentityServerBuilder identityServerBuilder)
         {
-            services.AddDbContext<CustomIdentityDbContext>(config =>
+            services.AddDbContext<EasyIdentityDbContext>(config =>
             {
                 config.UseInMemoryDatabase("InMemory");
             });
 
-            AddIdentityInternal(services, identityApiConfig);
-
-            identityServerBuilder.AddAspNetIdentity<IdentityUser>();
+            AddIdentityInternal(services, identityServerBuilder);
         }
 
-        public static void AddIdentityMySql(this IServiceCollection services, IdentityApiConfig identityApiConfig)
+        public static void AddEasyIdentityMySql(this IServiceCollection services, IdentityApiConfig identityApiConfig, IIdentityServerBuilder identityServerBuilder)
         {
-            services.AddDbContext<CustomIdentityDbContext>(config =>
+            services.AddDbContext<EasyIdentityDbContext>(config =>
             {
-                config.UseMySql(identityApiConfig.MySqlConnectionString);
+                config.UseMySql(identityApiConfig.MySql.IdentityDbContextConnectionString);
             });
-            AddIdentityInternal(services, identityApiConfig);
+            AddIdentityInternal(services, identityServerBuilder);
         }
 
-        private static void AddIdentityInternal(this IServiceCollection services, IdentityApiConfig identityApiConfig)
+        private static void AddIdentityInternal(this IServiceCollection services, IIdentityServerBuilder identityServerBuilder)
         {
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
             {
@@ -42,8 +40,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     RequireUppercase = false
                 };
             })
-            .AddEntityFrameworkStores<CustomIdentityDbContext>()
+            .AddEntityFrameworkStores<EasyIdentityDbContext>()
             .AddDefaultTokenProviders();
+
+            identityServerBuilder.AddAspNetIdentity<IdentityUser>();
         }
     }
 }

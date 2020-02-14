@@ -10,3 +10,9 @@
 /src/Web/Standard/obj
 /src/ApiGateways/OcelotApiGw/obj
 /src/Services/User.API/User.Application/obj
+/src/Assemblies/Easy.HttpClient/obj
+/src/Assemblies/EasyIdentity/obj
+/src/Assemblies/EasyIdentity/bin/Debug/netcoreapp3.1
+/src/Assemblies/Easy.HttpClient/bin/Debug/netstandard2.0
+/src/Web/WebAdmin/bin/Debug/netcoreapp3.1
+/src/Web/WebAdmin/obj

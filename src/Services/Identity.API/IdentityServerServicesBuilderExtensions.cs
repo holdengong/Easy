@@ -1,48 +1,42 @@
 ﻿using Identity.API;
 using IdentityServer4.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IdentityServerServicesBuilderExtensions
     {
-        public static IIdentityServerBuilder AddIdentityServerInMemory(this IServiceCollection services, IdentityApiConfig configuration)
+        public static IIdentityServerBuilder AddEasyIdentityServerInMemory(this IServiceCollection services, IdentityApiConfig identityApiConfig)
         {
-            return services.AddIdentityServerInternal(configuration)
+            return services.AddIdentityServerInternal(identityApiConfig)
            .AddInMemoryApiResources(Config.GetApiResources())
            .AddInMemoryIdentityResources(Config.GetIdentityResources())
            .AddInMemoryClients(Config.GetClients());
         }
 
-        //public static void AddIdentityServer(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var migrationsAssembly = typeof(IdentityServerExtensions).GetTypeInfo().Assembly.GetName().Name;
-        //    var ssoConfig = configuration.GetSection("IdentityConfig").Get<IdentityConfig>();
-        //    var builder = services.AddIdentityServerInternal(configuration)
-        //          .AddConfigurationStore(options =>
-        //          {
-        //              options.ConfigureDbContext = b =>
-        //                  b.UseMySql(ssoConfig.MySqlConnectionString,
-        //                      sql => sql.MigrationsAssembly(migrationsAssembly));
-        //          })
-        //            .AddRedisCaching(options =>
-        //            {
-        //                options.RedisConnectionString = ssoConfig.RedisConnectionString;
-        //                options.Db = 15;
-        //                options.KeyPrefix = "ConfigurationStore";
-        //            })
-        //            .AddConfigurationStoreCache()
-        //            .AddOperationalStore(options =>
-        //            {
-        //                options.RedisConnectionString = ssoConfig.RedisConnectionString;
-        //                options.Db = 15;
-        //                options.KeyPrefix = "OperationalStore";
-        //            });
-        //    //            builder.AddSigningCredential(new X509Certificate2(
-        //    //            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, identityServerOption.CertificateFileName),
-        //    //identityServerOption.CertificatePassword));
-        //}
+        public static IIdentityServerBuilder AddEasyIdentityServer(this IServiceCollection services, IdentityApiConfig identityApiConfig)
+        {
+            var migrationsAssembly = typeof(IdentityServerServicesBuilderExtensions).GetTypeInfo().Assembly.GetName().Name;
+            var builder = services.AddIdentityServerInternal(identityApiConfig)
+                  .AddConfigurationStore(options =>
+                  {
+                      options.ConfigureDbContext = b =>
+                          b.UseMySql(identityApiConfig.MySql.ConfigurationDbContextConnectionString,
+                              sql => sql.MigrationsAssembly(migrationsAssembly));
+                  })
+                  .AddOperationalStore(options =>
+                  {
+                      options.ConfigureDbContext = b =>
+                         b.UseMySql(identityApiConfig.MySql.PersistedGrantDbContextConnectionString,
+                             sql => sql.MigrationsAssembly(migrationsAssembly));
+                  })
+                  .AddDeveloperSigningCredential();
+
+            return builder;
+        }
 
         private static IIdentityServerBuilder AddIdentityServerInternal(this IServiceCollection services, IdentityApiConfig identityApiConfig)
         {

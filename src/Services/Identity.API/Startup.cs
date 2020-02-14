@@ -21,8 +21,19 @@ namespace Identity.API
             services.AddControllersWithViews();
 
             var identityApiConfig = Configuration.GetSection("IdentityApiConfig").Get<IdentityApiConfig>();
-            var identityServerBuilder = services.AddIdentityServerInMemory(identityApiConfig);
-            services.AddIdentityInMemory(identityApiConfig, identityServerBuilder);
+
+            bool isQuickStart = Configuration.GetValue<bool>("IsQuickStart");
+
+            if (isQuickStart)
+            {
+                var identityServerBuilder = services.AddEasyIdentityServerInMemory(identityApiConfig);
+                services.AddEasyIdentityInMemory(identityApiConfig, identityServerBuilder);
+            }
+            else
+            {
+                var identityServerBuilder = services.AddEasyIdentityServer(identityApiConfig);
+                services.AddEasyIdentityMySql(identityApiConfig, identityServerBuilder);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
