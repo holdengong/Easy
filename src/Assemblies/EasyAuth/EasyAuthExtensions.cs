@@ -1,4 +1,5 @@
-﻿using EasySso;
+﻿using EasyAuth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
@@ -17,16 +18,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <param name="loginPath"></param>
-        public static void AddEasyAuthWithCustomLoginPage(this IServiceCollection services, string loginPath=Consts.DefaultLoginPath)
+        public static void AddEasyAuthWithCustomLoginPage(this IServiceCollection services, string loginPath=EasyAuthConsts.DefaultLoginPath)
         {
             services.AddIdentity();
 
-            services.AddAuthentication(Consts.CookieSchema)
-               .AddCookie(Consts.CookieSchema);
+            services.AddAuthentication(EasyAuthConsts.CookieSchema)
+               .AddCookie(EasyAuthConsts.CookieSchema);
 
             services.ConfigureApplicationCookie(config =>
             {
-                config.Cookie.Name = Consts.CookieName;
+                config.Cookie.Name = EasyAuthConsts.CookieName;
                 config.LoginPath = loginPath;
             });
         }
@@ -35,44 +36,62 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddIdentity();
 
-            services.AddAuthentication(Consts.CookieSchema)
-                .AddCookie(Consts.CookieSchema);
+            services.AddAuthentication(EasyAuthConsts.CookieSchema)
+                .AddCookie(EasyAuthConsts.CookieSchema);
 
             services.ConfigureApplicationCookie(configureOptions);
         }
 
-        public static void AddEasyAuth(this IServiceCollection services, string clientId,string clientSecret,List<string> scopes)
+        public static void AddEasyAuth(this IServiceCollection services, string clientId,string clientSecret)
         {
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = Consts.CookieSchema;
-                options.DefaultChallengeScheme = Consts.OidcSchema;
+                options.DefaultScheme = EasyAuthConsts.CookieSchema;
+                options.DefaultChallengeScheme = EasyAuthConsts.OidcSchema;
             })
-            .AddCookie(Consts.CookieSchema)
-            .AddOpenIdConnect(Consts.OidcSchema, options =>
+            .AddCookie(EasyAuthConsts.CookieSchema)
+            .AddOpenIdConnect(EasyAuthConsts.OidcSchema, options =>
             {
-                options.SignInScheme = Consts.CookieSchema;
-                options.Authority = Consts.Authority;
+                options.SignInScheme = EasyAuthConsts.CookieSchema;
+                options.Authority = EasyAuthConsts.Authority;
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
                 options.ResponseType = ResponseTypes.Code;
                 options.SaveTokens = true;
-                scopes?.ForEach(_ =>
+                ProcessClaims(options);
+
+                options.Scope.Clear();
+                EasyAuthConsts.DefaultScope?.ForEach(_ =>
                 {
                     options.Scope.Add(_);
                 });
+                options.GetClaimsFromUserInfoEndpoint = true;
             });
+        }
+
+        private static void ProcessClaims(OpenIdConnectOptions options)
+        {
+            options.ClaimActions.MapAll();
+
+            //删除不用的claims可以减少cookie体积
+            options.ClaimActions.DeleteClaim("amr");
+            options.ClaimActions.DeleteClaim("s_hash");
+            options.ClaimActions.DeleteClaim("http://schemas.microsoft.com/claims/authnmethodsreferences");
+            options.ClaimActions.DeleteClaim("http://schemas.microsoft.com/identity/claims/identityprovider");
+            options.ClaimActions.DeleteClaim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            options.ClaimActions.DeleteClaim("sid");
+            options.ClaimActions.DeleteClaim("auth_time");
         }
 
         public static void AddEasyAuth(this IServiceCollection service, Action<OpenIdConnectOptions> configureOptions)
         {
             service.AddAuthentication(options =>
             {
-                options.DefaultScheme = Consts.CookieSchema;
-                options.DefaultChallengeScheme = Consts.OidcSchema;
+                options.DefaultScheme = EasyAuthConsts.CookieSchema;
+                options.DefaultChallengeScheme = EasyAuthConsts.OidcSchema;
             })
-            .AddCookie(Consts.CookieSchema)
-            .AddOpenIdConnect(Consts.OidcSchema, configureOptions);
+            .AddCookie(EasyAuthConsts.CookieSchema)
+            .AddOpenIdConnect(EasyAuthConsts.OidcSchema, configureOptions);
         }
 
         private static void AddIdentity(this IServiceCollection services)

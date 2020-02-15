@@ -21,22 +21,38 @@ namespace Identity.API
             return new List<IdentityResource>
             {
                new OpenId(),
-               new Profile()
+               new IdentityResource("userid",new List<string>{ "userid"}),
+              new IdentityResource("username",new List<string>{ "username"}),
+               new IdentityResource("email",new List<string>{ "email"}),
+               new IdentityResource("mobile",new List<string>{ "mobile"}),
             };
         }
 
-        public static List<Client> GetClients()
+        private static List<string> DefaultScope = new List<string>
+        {
+            "api",
+            "openid",
+            "userid",
+            "username",
+            "email",
+            "mobile",
+            "offline_access"
+        };
+
+        private static List<Secret> DefaultSecret = new List<Secret> { new Secret("secret".ToSha256()) };
+
+    public static List<Client> GetClients()
         {
             var result = new List<Client>();
 
             result.Add(new Client
             {
                 ClientId = "admin",
-                ClientName= "admin",
+                ClientName = "admin",
                 Description = "Easy框架后台管理系统",
-                ClientSecrets = new List<Secret> { new Secret("secret".ToSha256()) },
+                ClientSecrets = DefaultSecret,
                 AllowedGrantTypes = IdentityServer4.Models.GrantTypes.Code,
-                AllowedScopes = new List<string> { "api", StandardScopes.OfflineAccess, StandardScopes.OpenId, StandardScopes.Profile },
+                AllowedScopes = DefaultScope,
                 RedirectUris = new List<string> { "https://localhost:20000/signin-oidc" },
                 AllowOfflineAccess = true,
                 RequireConsent = false,
@@ -47,9 +63,9 @@ namespace Identity.API
                 ClientId = "identity",
                 ClientName = "identity",
                 Description = "IdentityApi",
-                ClientSecrets = new List<Secret> { new Secret("secret".ToSha256()) },
+                ClientSecrets = DefaultSecret,
                 AllowedGrantTypes = IdentityServer4.Models.GrantTypes.Code,
-                AllowedScopes = new List<string> { "api", StandardScopes.OfflineAccess, StandardScopes.OpenId, StandardScopes.Profile },
+                AllowedScopes = DefaultScope,
                 RedirectUris = new List<string> { "https://localhost:10001/signin-oidc" },
                 AllowOfflineAccess = true,
                 RequireConsent = false,
@@ -60,9 +76,9 @@ namespace Identity.API
                 ClientId = "easyshop_client",
                 ClientName = "easyshop_client",
                 Description = "网上商城C端",
-                ClientSecrets = new List<Secret> { new Secret("secret".ToSha256()) },
+                ClientSecrets = DefaultSecret,
                 AllowedGrantTypes = IdentityServer4.Models.GrantTypes.ResourceOwnerPassword,
-                AllowedScopes = new List<string> { "api", StandardScopes.OfflineAccess, StandardScopes.OpenId, StandardScopes.Profile },
+                AllowedScopes = DefaultScope,
                 RedirectUris = new List<string> { "https://localhost:20001/Account/Login" },
                 AllowOfflineAccess = true,
                 RequireConsent = false,

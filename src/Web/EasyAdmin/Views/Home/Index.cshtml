@@ -1,1 +1,6 @@
-﻿<h1>Welcome to Easy framework!</h1>
+﻿@using Admin.WebApp.Controllers;
+@model ClaimViewModel;
+@foreach (var item in Model.Claims)
+{
+    <h1>@item.Type = @item.Value</h1>
+}

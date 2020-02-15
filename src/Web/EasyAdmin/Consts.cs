@@ -9,7 +9,6 @@ namespace Admin.WebApp
     {
         public const string ClientId = "admin";
         public const string ClientSecret = "secret";
-        public readonly static List<string> Scope = new List<string> { "api", "offline_access" };
         public const string LoginPath = "/User/Login";
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Identity.API.Controllers
@@ -42,10 +44,18 @@ namespace Identity.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string password)
+        public async Task<IActionResult> Register(string username, string password,string email,string mobile)
         {
             var user = new IdentityUser(username);
             await _userManager.CreateAsync(user, password);
+            var claims = new List<Claim>
+            {
+                new Claim("userid",user.Id),
+                new Claim("username",user.UserName),
+                new Claim("email",email),
+                new Claim("mobile",mobile)
+            };
+            await _userManager.AddClaimsAsync(user, claims);
             return Ok();
         }
 

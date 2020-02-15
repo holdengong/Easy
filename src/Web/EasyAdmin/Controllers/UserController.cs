@@ -23,6 +23,9 @@ namespace Admin.WebApp.Controllers
             var httpClient = _httpClientFactory.CreateClient();
 
             var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var idToken = await HttpContext.GetTokenAsync("id_token");
+            var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+
             httpClient.SetBearerToken(accessToken);
             var response = await httpClient.GetAsync("https://localhost:10000");
             if (response.IsSuccessStatusCode)
