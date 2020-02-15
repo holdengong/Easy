@@ -22,10 +22,6 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Home\" />
-  </ItemGroup>
-
   <ProjectExtensions><VisualStudio><UserProperties hosting_1json__JsonSchema="http://json-schema.org/draft-04/schema" /></VisualStudio></ProjectExtensions>
 
 

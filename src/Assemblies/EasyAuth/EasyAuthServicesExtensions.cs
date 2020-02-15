@@ -11,7 +11,7 @@ using static IdentityModel.OidcConstants;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class EasyAuthExtensions
+    public static class EasyAuthServicesExtensions
     {
         /// <summary>
         /// 
@@ -20,6 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="loginPath"></param>
         public static void AddEasyAuthWithCustomLoginPage(this IServiceCollection services, string loginPath=EasyAuthConsts.DefaultLoginPath)
         {
+            services.AddHttpClient();
+
             services.AddIdentity();
 
             services.AddAuthentication(EasyAuthConsts.CookieSchema)
@@ -34,6 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static void AddEasyAuthWithCustomLoginPage(this IServiceCollection services, Action<CookieAuthenticationOptions> configureOptions)
         {
+            services.AddHttpClient();
+
             services.AddIdentity();
 
             services.AddAuthentication(EasyAuthConsts.CookieSchema)
@@ -44,6 +48,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static void AddEasyAuth(this IServiceCollection services, string clientId,string clientSecret)
         {
+            services.AddHttpClient();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = EasyAuthConsts.CookieSchema;
@@ -58,15 +64,20 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.ClientSecret = clientSecret;
                 options.ResponseType = ResponseTypes.Code;
                 options.SaveTokens = true;
+                
                 ProcessClaims(options);
-
-                options.Scope.Clear();
-                EasyAuthConsts.DefaultScope?.ForEach(_ =>
-                {
-                    options.Scope.Add(_);
-                });
-                options.GetClaimsFromUserInfoEndpoint = true;
+                ProcessScode(options);
             });
+        }
+
+        private static void ProcessScode(OpenIdConnectOptions options)
+        {
+            options.Scope.Clear();
+            EasyAuthConsts.DefaultScope?.ForEach(_ =>
+            {
+                options.Scope.Add(_);
+            });
+            options.GetClaimsFromUserInfoEndpoint = true;
         }
 
         private static void ProcessClaims(OpenIdConnectOptions options)

@@ -49,6 +49,8 @@ namespace Admin.WebApp
 
             app.UseAuthorization();
 
+            app.UseEasyAuth();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

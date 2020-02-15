@@ -21,5 +21,9 @@ namespace EasyAuth
             "mobile",
             "offline_access"
         };
+
+        public const string TokenEndpoint = "/extension/gettoken";
+
+        public const string UserInfoEndpoint = "/extension/getuserinfo";
     }
 }
