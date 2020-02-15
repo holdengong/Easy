@@ -33,6 +33,7 @@ namespace EasyShopClient.WebApp.Controllers
             {
                 var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
                 if (signInResult.Succeeded)
+
                 {
                     var disco = await httpClient.GetDiscoveryDocumentAsync("https://localhost:10001");
                     var token = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest

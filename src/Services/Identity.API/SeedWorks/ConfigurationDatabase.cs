@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Identity.API.SeedWorks
 {
-    public static class IdentityServerConfigurationData
+    public static class ConfigurationDatabase
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {

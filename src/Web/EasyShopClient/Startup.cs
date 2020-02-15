@@ -21,7 +21,7 @@ namespace EasyShopClient.WebApp
         {
             services.AddControllersWithViews();
 
-            services.AddEasySsoWithCustomLoginPage("/user/login");
+            services.AddEasyAuthWithCustomLoginPage("/user/login");
 
             services.AddHttpClient();
         }

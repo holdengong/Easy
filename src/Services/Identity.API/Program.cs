@@ -25,7 +25,7 @@ namespace Easy.Services.Sso
         {
             using (var scope = host.Services.CreateScope())
             {
-                IdentityServerConfigurationData.Initialize(scope.ServiceProvider);
+                SeedWork.Initialize(scope.ServiceProvider);
             }
         }
 

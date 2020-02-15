@@ -1,13 +1,12 @@
 ﻿using Identity.API;
 using IdentityServer4.Configuration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IdentityServerServicesBuilderExtensions
+    public static class IdentityServerExtensions
     {
         public static IIdentityServerBuilder AddEasyIdentityServerInMemory(this IServiceCollection services, IdentityApiConfig identityApiConfig)
         {
@@ -19,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IIdentityServerBuilder AddEasyIdentityServer(this IServiceCollection services, IdentityApiConfig identityApiConfig)
         {
-            var migrationsAssembly = typeof(IdentityServerServicesBuilderExtensions).GetTypeInfo().Assembly.GetName().Name;
+            var migrationsAssembly = typeof(IdentityServerExtensions).GetTypeInfo().Assembly.GetName().Name;
             var builder = services.AddIdentityServerInternal(identityApiConfig)
                   .AddConfigurationStore(options =>
                   {
@@ -51,7 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     ErrorUrl = "/Error"
                 };
             })
-            .AddDeveloperSigningCredential();
+            .AddDeveloperSigningCredential()
+            .AddAspNetIdentity<IdentityUser>();
 
             return builder;
         }

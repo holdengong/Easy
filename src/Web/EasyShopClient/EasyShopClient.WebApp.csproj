@@ -9,6 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Assemblies\EasySso\EasySso.csproj" />
+    <ProjectReference Include="..\..\Assemblies\EasyAuth\EasyAuth.csproj" />
   </ItemGroup>
 </Project>

@@ -26,16 +26,14 @@ namespace Identity.API
 
             if (isQuickStart)
             {
-                var identityServerBuilder = services.AddEasyIdentityServerInMemory(identityApiConfig);
-                services.AddEasyIdentityInMemory(identityApiConfig, identityServerBuilder);
+                services.AddEasyIdentityInMemory();
+                services.AddEasyIdentityServerInMemory(identityApiConfig);
             }
             else
             {
-                var identityServerBuilder = services.AddEasyIdentityServer(identityApiConfig);
-                services.AddEasyIdentityMySql(identityApiConfig, identityServerBuilder);
+                services.AddEasyIdentity(identityApiConfig.MySql.IdentityDbContextConnectionString);
+                services.AddEasyIdentityServer(identityApiConfig);
             }
-
-            services.AddEasySso("identity");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

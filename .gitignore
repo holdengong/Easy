@@ -24,3 +24,5 @@
 /src/Web/EasyAdmin/obj
 /src/Web/EasyShopClient/bin/Debug/netcoreapp3.1
 /src/Web/EasyShopClient/obj
+/src/Assemblies/EasyAuth/obj
+/src/Assemblies/EasyAuth/bin/Debug/netcoreapp3.1

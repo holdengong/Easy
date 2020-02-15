@@ -21,7 +21,7 @@ namespace Admin.WebApp
         {
             services.AddControllersWithViews();
 
-            services.AddEasySso("admin");
+            services.AddEasyAuth(Consts.ClientId, Consts.ClientSecret, Consts.Scope);
 
             services.AddHttpClient();
         }

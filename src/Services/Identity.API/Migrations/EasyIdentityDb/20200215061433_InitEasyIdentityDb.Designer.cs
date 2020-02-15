@@ -3,14 +3,16 @@ using System;
 using Identity.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Identity.API.Migrations
+namespace Identity.API.Migrations.EasyIdentityDb
 {
     [DbContext(typeof(EasyIdentityDbContext))]
-    partial class EasyIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200215061433_InitEasyIdentityDb")]
+    partial class InitEasyIdentityDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

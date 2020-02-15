@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Identity.API.Migrations.ConfigurationDb
+namespace Identity.API.Migrations
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20200214114006_ConfigurationDbContextInit")]
-    partial class ConfigurationDbContextInit
+    [Migration("20200215060317_InitConfigurationDb")]
+    partial class InitConfigurationDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

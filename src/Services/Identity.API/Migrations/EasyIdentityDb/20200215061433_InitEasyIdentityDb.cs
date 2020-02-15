@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Identity.API.Migrations
+namespace Identity.API.Migrations.EasyIdentityDb
 {
-    public partial class EasyIdentityDbContextInit : Migration
+    public partial class InitEasyIdentityDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
