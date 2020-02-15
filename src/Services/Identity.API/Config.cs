@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 using static IdentityModel.OidcConstants;
 using static IdentityServer4.Models.IdentityResources;
 
@@ -21,6 +22,7 @@ namespace Identity.API
             return new List<IdentityResource>
             {
                new OpenId(),
+               new Profile(),
                new IdentityResource("userid",new List<string>{ "userid"}),
               new IdentityResource("username",new List<string>{ "username"}),
                new IdentityResource("email",new List<string>{ "email"}),
@@ -32,6 +34,7 @@ namespace Identity.API
         {
             "api",
             "openid",
+            "profile",
             "userid",
             "username",
             "email",
@@ -55,9 +58,9 @@ namespace Identity.API
                 RedirectUris = new List<string> { "https://localhost:20000/signin-oidc" },
                 AllowOfflineAccess = true,
                 RequireConsent = false,
-                AccessTokenLifetime = 1,
+                AccessTokenLifetime = 60 * 60 * 24 * 365 
             });
-            
+
             result.Add(new Client
             {
                 ClientId = "easyshop_client",
@@ -68,8 +71,7 @@ namespace Identity.API
                 AllowedScopes = DefaultScope,
                 RedirectUris = new List<string> { "https://localhost:20001/Account/Login" },
                 AllowOfflineAccess = true,
-                RequireConsent = false,
-                 
+                RequireConsent = false
             });
 
             return result;

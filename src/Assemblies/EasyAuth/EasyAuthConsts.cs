@@ -15,6 +15,7 @@ namespace EasyAuth
         {
             "api",
             "openid",
+            "profile",
             "userid",
             "username",
             "email",

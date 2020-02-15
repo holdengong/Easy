@@ -51,6 +51,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 };
             })
             .AddDeveloperSigningCredential()
+            .AddProfileService<ProfileService>()
             .AddAspNetIdentity<IdentityUser>();
 
             return builder;

@@ -35,6 +35,7 @@ namespace EasyAuth
             if (context.Request.Path.Value.ToLower() == EasyAuthConsts.TokenEndpoint)
             {
                 await GetTokenAsync(context);
+                return;
             }
 
             await _next.Invoke(context);
@@ -45,6 +46,7 @@ namespace EasyAuth
             string clientId = Configuration["ClientId"];
             string clientSecret = Configuration["ClientSecret"];
             string ssoHost = Configuration["SsoHost"];
+
             var accessToken = await context.GetTokenAsync("access_token");
             var tokenType = await context.GetTokenAsync("token_type");
             var expiresAt = await context.GetTokenAsync("expires_at");
