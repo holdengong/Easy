@@ -12,6 +12,10 @@
     <ProjectReference Include="..\..\Assemblies\EasyAuth\EasyAuth.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

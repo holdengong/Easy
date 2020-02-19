@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
                          b.UseMySql(identityApiConfig.MySql.PersistedGrantDbContextConnectionString,
                              sql => sql.MigrationsAssembly(migrationsAssembly));
                   })
-                  .AddDeveloperSigningCredential();
+                  .AddDeveloperSigningCredential(true, "tempkey.rsa");
 
             return builder;
         }
