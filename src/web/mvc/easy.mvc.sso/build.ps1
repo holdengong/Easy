@@ -4,38 +4,53 @@ $distPath = $vueAppRootPath + "/dist"; #dist静态文件目录
 $nodemodulePath = $vueAppRootPath + "/node_modules"; #node_modules目录
 $indexHtmlPath = $distPath+"/index.html"; # 前端首页地址
 $indexCshtmlPath = "Views/Home/Index.cshtml"; # 后端首页地址
+$errorcode = 0;
 
-# 前端操作
-cd $vueAppRootPath
+function stopWhenError($errmsg)
+{
+    if($LASTEXITCODE -gt 0)
+    {
+        Write-Error $errmsg
+        exit
+    }
+}
 
+Set-Location $vueAppRootPath
 # 删除dist文件夹
 if(Test-Path $distPath)
 {
-    rmdir $distPath -Force -Recurse
+    Remove-Item $distPath -Force -Recurse
 } 
 
 #前端构建
-try {
-    npm run build
-}
-catch {
+npm run build
+
+$errorcode = $LASTEXITCODE
+
+if($errorcode -gt 0)
+{
+    Write-Host "npm run build failed, trying npm install..."
     # 删除node_modules文件夹
     if(Test-Path $nodemodulePath)
     {
-        rmdir $nodemodulePath -Force -Recurse
+        Remove-Item $nodemodulePath -Force -Recurse
     }
-    #npm 装包
-    cd $vueAppRootPath
     npm install
+
+    stopWhenError "npm install failed...please check manually..."
+
+    npm run build
+    stopWhenError "npm build still failed...please check manually..."
 }
 
-# 后端操作
-cd "../../mvc/easy.mvc.sso"
+Set-Location "../../mvc/easy.mvc.sso"
 
+# 后端操作
 # 拷贝dist到wwwroot
 $distAll = $distPath + "/*";
-cp $distAll "wwwroot" -Recurse -Force
-cp $indexHtmlPath $indexCshtmlPath -Force
+Copy-Item $distAll "wwwroot" -Recurse -Force
+
+Copy-Item $indexHtmlPath $indexCshtmlPath -Force
 
 dotnet restore
 dotnet run
