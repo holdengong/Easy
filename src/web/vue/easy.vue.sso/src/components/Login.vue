@@ -29,7 +29,7 @@ export default {
     return {
       form: {
         username: "",
-        password: ""
+        password: "",
       },
 
       // 表单验证，需要在 el-form-item 元素中增加 prop 属性
@@ -49,10 +49,12 @@ export default {
       // 为表单绑定验证功能
       this.$refs[formName].validate(valid => {
         if (valid) {
+          let returnUrl = this.$route.query.ReturnUrl
           this.axios
-            .post("/api/account/login",this.form)
+            .post("https://localhost:10001/api/account/login",this.form)
             .then(response => {
-                console.log(response)
+               console.log(response)
+               window.location.href = returnUrl
             })
             .catch(function(error) {
               // 请求失败处理
@@ -66,6 +68,9 @@ export default {
         }
       });
     }
+  },
+  mounted:function(){
+    console.log(this.$route.query.returnUrl)
   }
 };
 </script>

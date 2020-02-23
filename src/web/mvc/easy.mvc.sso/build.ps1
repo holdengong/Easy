@@ -29,7 +29,7 @@ $errorcode = $LASTEXITCODE
 
 if($errorcode -gt 0)
 {
-    Write-Host "npm run build failed, trying npm install..."
+    Write-Information "npm run build failed, trying npm install..."
     # 删除node_modules文件夹
     if(Test-Path $nodemodulePath)
     {
@@ -53,4 +53,10 @@ Copy-Item $distAll "wwwroot" -Recurse -Force
 Copy-Item $indexHtmlPath $indexCshtmlPath -Force
 
 dotnet restore
+dotnet run
+
+cd ../easy.mvc.admin
+dotnet run
+
+cd ../easy.mvc.eshop
 dotnet run

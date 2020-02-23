@@ -25,18 +25,13 @@ namespace Identity.API.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody]LoginViewModel vm)
         {
-            if (string.IsNullOrWhiteSpace(vm.ReturnUrl))
-            {
-                throw new ArgumentNullException(nameof(vm.ReturnUrl));
-            }
-
             var user = await _userManager.FindByNameAsync(vm.Username);
             if (user != null)
             {
                 var signInResult = await _signInManager.PasswordSignInAsync(user, vm.Password, false, false);
                 if (signInResult.Succeeded)
                 {
-                    return Redirect(vm.ReturnUrl);
+                    return Ok();
                 }
 
                 return Unauthorized(signInResult);

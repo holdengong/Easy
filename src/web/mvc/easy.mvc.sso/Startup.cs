@@ -38,6 +38,8 @@ namespace Identity.API
                 services.AddEasySso(identityApiConfig.MySql.IdentityDbContextConnectionString);
                 services.AddEasyIdentityServer(identityApiConfig);
             }
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +51,8 @@ namespace Identity.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseStaticFiles();
 

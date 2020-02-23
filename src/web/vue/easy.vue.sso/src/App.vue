@@ -1,18 +1,26 @@
 <template>
   <div id="app">
-    <Login/>
+    <router-view></router-view>
+    <router-link to="/login">登录</router-link>
+    <router-link to="/register">注册</router-link>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import Login from './components/Login.vue'
+import Login from "./components/Login.vue";
+import VueRouter from "vue-router";
+
 export default {
-  name: 'App',
-  components: {
-    Login
-  }
-}
+  name: "App",
+  router: routerObj
+};
+
+var routerObj = new VueRouter({
+  routes: [
+    { path: "/", redirect: "/login" },
+    { path: "/login", component: Login }
+  ]
+});
 </script>
 
 <style>
