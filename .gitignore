@@ -26,3 +26,14 @@
 /src/Web/EasyShopClient/obj
 /src/Assemblies/EasyAuth/obj
 /src/Assemblies/EasyAuth/bin/Debug/netcoreapp3.1
+/src/web/mvc/easy.mvc.sso/VueApp/dist
+/src/web/mvc/easy.mvc.sso/Views/Home/Index.cshtml
+/src/assembly/easy.sso.assembly/bin
+/src/assembly/easy.sso.assembly/obj
+/src/Web/mvc/easy.mvc.admin/bin
+/src/Web/mvc/easy.mvc.admin/obj
+/src/Web/mvc/easy.mvc.eshop/bin
+/src/Web/mvc/easy.mvc.eshop/obj
+/src/Web/mvc/easy.mvc.sso/bin
+/src/Web/mvc/easy.mvc.sso/obj
+/src/Web/mvc/easy.mvc.sso/wwwroot
