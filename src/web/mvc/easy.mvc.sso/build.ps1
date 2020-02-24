@@ -1,6 +1,6 @@
 # 定义变量
-$vueAppRootPath = "../../vue/easy.vue.sso"; #vue根目录
-$distPath = $vueAppRootPath + "/dist"; #dist静态文件目录
+$vueAppRootPath = "../../vue/easy.vue.sso"; #vue根目�?
+$distPath = $vueAppRootPath + "/dist"; #dist静态文件目�?
 $nodemodulePath = $vueAppRootPath + "/node_modules"; #node_modules目录
 $indexHtmlPath = $distPath+"/index.html"; # 前端首页地址
 $indexCshtmlPath = "Views/Home/Index.cshtml"; # 后端首页地址
@@ -16,7 +16,7 @@ function stopWhenError($errmsg)
 }
 
 Set-Location $vueAppRootPath
-# 删除dist文件夹
+# 删除dist文件�?
 if(Test-Path $distPath)
 {
     Remove-Item $distPath -Force -Recurse
@@ -30,7 +30,7 @@ $errorcode = $LASTEXITCODE
 if($errorcode -gt 0)
 {
     Write-Information "npm run build failed, trying npm install..."
-    # 删除node_modules文件夹
+    # 删除node_modules文件�?
     if(Test-Path $nodemodulePath)
     {
         Remove-Item $nodemodulePath -Force -Recurse
@@ -53,10 +53,4 @@ Copy-Item $distAll "wwwroot" -Recurse -Force
 Copy-Item $indexHtmlPath $indexCshtmlPath -Force
 
 dotnet restore
-dotnet run
-
-cd ../easy.mvc.admin
-dotnet run
-
-cd ../easy.mvc.eshop
-dotnet run
+dotnet build
