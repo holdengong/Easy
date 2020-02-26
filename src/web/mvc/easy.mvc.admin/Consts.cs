@@ -10,6 +10,6 @@ namespace Admin.WebApp
         public const string ClientId = "admin";
         public const string ClientSecret = "secret";
         public const string LoginPath = "/User/Login";
-        public const string SsoHost = "https://localhost:10001";
+        public const string SsoHost = "https://localhost:10000";
     }
 }

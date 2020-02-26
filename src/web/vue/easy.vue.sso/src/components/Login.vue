@@ -1,95 +1,116 @@
 <template>
-  <div>
-    <el-form ref="loginForm" :model="form" :rules="rules" label-width="80px" class="login-box">
-      <h3 class="login-title">欢迎登录</h3>
-      <el-form-item label="账号" prop="username">
-        <el-input type="text" placeholder="请输入账号" v-model="form.username" />
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input type="password" placeholder="请输入密码" v-model="form.password" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" v-on:click="onSubmit('loginForm')">登录</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="login_container">
+    <div class="login_box">
+      <!-- 头像区域 -->
+      <div class="avatar_box">
+        <img src="../assets/img/avatar.png" alt />
+      </div>
 
-    <el-dialog title="温馨提示" :visible.sync="dialogVisible" width="30%">
-      <span>请输入账号和密码</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
+      <!-- 登录表单区域 -->
+      <el-form ref="loginFormRef" class="login_form" :model="loginForm" :rules="loginFormRules">
+        <!-- 用户名 -->
+        <el-form-item prop="username">
+          <el-input prefix-icon="el-icon-user" v-model="loginForm.username"></el-input>
+        </el-form-item>
+        <!-- 密码 -->
+        <el-form-item prop="password">
+          <el-input prefix-icon="el-icon-lock" v-model="loginForm.password" type="password"></el-input>
+        </el-form-item>
+        <!-- 按钮区域 -->
+        <el-form-item class="btns">
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="infor" @click="resetLoginForm">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Login",
   data() {
     return {
-      form: {
+      loginForm: {
         username: "",
-        password: "",
+        password: ""
       },
-
-      // 表单验证，需要在 el-form-item 元素中增加 prop 属性
-      rules: {
+      loginFormRules: {
         username: [
-          { required: true, message: "账号不可为空", trigger: "blur" }
-        ],
-        password: [{ required: true, message: "密码不可为空", trigger: "blur" }]
-      },
-
-      // 对话框显示和隐藏
-      dialogVisible: false
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+        ]
+      }
     };
   },
   methods: {
-    onSubmit(formName) {
-      // 为表单绑定验证功能
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          let returnUrl = this.$route.query.ReturnUrl
-          this.axios
-            .post("https://localhost:10001/api/account/login",this.form)
-            .then(response => {
-               console.log(response)
-               window.location.href = returnUrl
-            })
-            .catch(function(error) {
-              // 请求失败处理
-              console.log(error);
-            });
-          // 使用 vue-router 路由到指定页面，该方式称之为编程式导航
-          //this.$router.push("/main");
-        } else {
-          this.dialogVisible = true;
-          return false;
+    resetLoginForm() {
+      this.$refs.loginFormRef.resetFields()
+    },
+    login(){
+      this.$refs.loginFormRef.validate(async valid=>{
+        if(!valid){
+          return
+        }else{
+          const result = await this.$http.post('account/login',this.loginForm)
+          if(result.status===200&&result.data.code===0){
+            let returnUrl = this.$route.query.ReturnUrl
+            window.location.href = returnUrl
+          }else{
+            this.$message.error(result.data.message)
+          }
         }
       });
     }
-  },
-  mounted:function(){
-    console.log(this.$route.query.returnUrl)
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.login-box {
-  border: 1px solid #dcdfe6;
-  width: 350px;
-  margin: 180px auto;
-  padding: 35px 35px 15px 35px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  box-shadow: 0 0 25px #909399;
+<style lang="less" scoped>
+.login_container {
+  background-color: #2b4b6b;
+  height: 100%;
 }
 
-.login-title {
-  text-align: center;
-  margin: 0 auto 40px auto;
-  color: #303133;
+.login_box {
+  width: 450px;
+  height: 300px;
+  background-color: #fff;
+  border-radius: 10px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  .avatar_box {
+    height: 130px;
+    width: 130px;
+    border: 1px solid #eee;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 0 10px #ddd;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #eee;
+    }
+  }
+
+  .btns {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .login_form {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
 }
 </style>

@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Easy.Mvc.Admin", "web\mvc\e
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Easy.Mvc.EShop", "web\mvc\easy.mvc.eshop\Easy.Mvc.EShop.csproj", "{C0ACC00A-EBAE-4800-AD48-9BD5E9A17A13}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Easy.Common.Assembly", "assembly\easy.common.assembly\Easy.Common.Assembly.csproj", "{E6651EF8-EF52-47FF-A5F0-B774EA305957}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{C0ACC00A-EBAE-4800-AD48-9BD5E9A17A13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0ACC00A-EBAE-4800-AD48-9BD5E9A17A13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0ACC00A-EBAE-4800-AD48-9BD5E9A17A13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6651EF8-EF52-47FF-A5F0-B774EA305957}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6651EF8-EF52-47FF-A5F0-B774EA305957}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6651EF8-EF52-47FF-A5F0-B774EA305957}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6651EF8-EF52-47FF-A5F0-B774EA305957}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{7C13888B-1CBE-49B9-AB8E-784692D46B41} = {F383BBB8-6029-4B7F-8722-5800B2B1E90E}
 		{DBC2E9D5-B4D3-472D-B361-300ECFD888F0} = {F383BBB8-6029-4B7F-8722-5800B2B1E90E}
 		{C0ACC00A-EBAE-4800-AD48-9BD5E9A17A13} = {F383BBB8-6029-4B7F-8722-5800B2B1E90E}
+		{E6651EF8-EF52-47FF-A5F0-B774EA305957} = {6A7348A7-BCFE-49F4-AC69-A23DB75FAEA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {15978D57-F8C2-4A79-9965-4066ECB88F47}

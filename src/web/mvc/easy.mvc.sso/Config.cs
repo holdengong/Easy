@@ -55,7 +55,7 @@ namespace Identity.API
                 ClientSecrets = DefaultSecret,
                 AllowedGrantTypes = IdentityServer4.Models.GrantTypes.Code,
                 AllowedScopes = DefaultScope,
-                RedirectUris = new List<string> { "https://localhost:20000/signin-oidc" },
+                RedirectUris = new List<string> { "https://localhost:10001/signin-oidc" },
                 AllowOfflineAccess = true,
                 RequireConsent = false,
                 AccessTokenLifetime = 60 * 60 * 24 * 365 
@@ -69,7 +69,7 @@ namespace Identity.API
                 ClientSecrets = DefaultSecret,
                 AllowedGrantTypes = IdentityServer4.Models.GrantTypes.ResourceOwnerPassword,
                 AllowedScopes = DefaultScope,
-                RedirectUris = new List<string> { "https://localhost:20001/Account/Login" },
+                RedirectUris = new List<string> { "https://localhost:10002/Account/Login" },
                 AllowOfflineAccess = true,
                 RequireConsent = false
             });
