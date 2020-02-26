@@ -39,7 +39,14 @@ namespace Identity.API
                 services.AddEasyIdentityServer(identityApiConfig);
             }
 
-            services.AddCors();
+            services.AddCors(config=> {
+                config.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

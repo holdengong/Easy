@@ -4,7 +4,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import VueRouter from 'vue-router'
 import vueAxios from 'vue-axios'
 import axios from 'axios'
-
+Vue.prototype.$http = axios
+axios.defaults.baseURL='https://localhost:10001/api/'
 import App from './App.vue'
 
 import router from './router/index'
