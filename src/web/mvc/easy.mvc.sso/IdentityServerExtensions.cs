@@ -46,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 x.UserInteraction = new UserInteractionOptions()
                 {
                     LoginUrl = "/Account/Login",
-                    LogoutUrl = "/Account/Logout",
+                    LogoutUrl = "/Account/Login",
                     ErrorUrl = "/Error"
                 };
             })

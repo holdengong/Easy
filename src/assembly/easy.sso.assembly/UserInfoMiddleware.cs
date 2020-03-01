@@ -33,7 +33,7 @@ namespace EasyAuth
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path.Value.ToLower() == EasySsoConsts.UserInfoEndpoint)
+            if (context.Request.Path.Value.ToLower() == EasySsoConsts.USERINFO_ENDPOINT)
             {
                 await GetUserInfoAsync(context);
                 return;

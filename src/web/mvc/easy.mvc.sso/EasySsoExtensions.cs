@@ -1,4 +1,4 @@
-﻿using Identity.API.Data;
+﻿using Easy.Mvc.Sso.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

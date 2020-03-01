@@ -1,4 +1,4 @@
-﻿using Identity.API.Data;
+﻿using Easy.Mvc.Sso.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,7 +11,6 @@ namespace Identity.API.SeedWorks
         {
             using (var context = serviceProvider.GetRequiredService<EasyIdentityDbContext>())
             {
-                context.Database.Migrate();
             }
         }
     }

@@ -1,39 +1,192 @@
-﻿using IdentityModel.Client;
-using Microsoft.AspNetCore.Authentication;
+﻿using AutoMapper;
+using Easy.Mvc.Admin.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Admin.WebApp.Controllers
+namespace Easy.Mvc.Admin.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public UserController(IHttpClientFactory httpClientFactory)
+        public UserController(UserManager<IdentityUser> userManager
+            ,IMapper mapper)
         {
-            _httpClientFactory = httpClientFactory;
+            _userManager = userManager;
+            _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index()
+        [Route("api/users")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserList([FromQuery]int pageIndex,int pageSize,string keywords)
         {
-            var httpClient = _httpClientFactory.CreateClient();
-
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            var idToken = await HttpContext.GetTokenAsync("id_token");
-            var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
-
-            httpClient.SetBearerToken(accessToken);
-            var response = await httpClient.GetAsync("https://localhost:10000");
-            if (response.IsSuccessStatusCode)
+            var users = _userManager.Users;
+            if (!string.IsNullOrWhiteSpace(keywords))
             {
-                var responseString = await response.Content.ReadAsStringAsync();
-                return Content(responseString);
+                users = users.Where(_=>_.UserName.Contains(keywords,StringComparison.CurrentCultureIgnoreCase));
             }
-            return new UnauthorizedResult();
+
+            int total = users.Count();
+
+            int skip = (pageIndex - 1) * pageSize;
+            var pagedUsers = users.Skip(skip).Take(pageSize).ToList();
+
+            var result = new List<UserViewModel>();
+
+            foreach (var user in pagedUsers)
+            {
+                var claims = await _userManager.GetClaimsAsync(user);
+                
+                var isActive = claims.FirstOrDefault(_ => _.Type == "isactive")?.Value == null
+                        ? false : bool.Parse(claims.FirstOrDefault(_ => _.Type == "isactive").Value);
+
+                var role = string.IsNullOrWhiteSpace(claims.FirstOrDefault(_ => _.Type == "role")?.Value)
+                    ? "游客" 
+                    : claims.FirstOrDefault(_ => _.Type == "role")?.Value;
+
+                result.Add(new UserViewModel
+                {
+                    Id = user.Id,
+                    Mobile = user.PhoneNumber,
+                    Email = user.Email,
+                    IsActive = isActive,
+                    UserName = user.UserName,
+                    Role = role
+                });
+            }
+
+            return EasyResult.PagedList(result, total);
+        }
+
+        [Route("api/users")]
+        [HttpPost]
+        public async Task<IActionResult> AddUserAsync([FromBody]UserViewModel viewModel)
+        {
+            var user = await _userManager.FindByNameAsync(viewModel.UserName);
+            if (user != null)
+            {
+                return EasyResult.Error("用户已存在");
+            }
+
+            user = new IdentityUser
+            {
+                UserName = viewModel.UserName,
+                Email = viewModel.Email,
+                PhoneNumber = viewModel.Mobile
+            };
+
+            var addResult = await _userManager.CreateAsync(user);
+            if (!addResult.Succeeded)
+            {
+                return EasyResult.Error("新增用户失败");
+            }
+
+            _userManager.PasswordHasher.HashPassword(user, viewModel.Password);
+
+            return EasyResult.Ok();
+        }
+
+        [Route("api/user/{id}/state")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserStateAsync([FromRoute]string id,[FromBody]UserViewModel viewModel)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var claims = await _userManager.GetClaimsAsync(user);
+                var activeClaim = claims.FirstOrDefault(_ => _.Type == "isactive");
+                var newActiveClaim = new Claim("isactive", viewModel.IsActive.ToString());
+                if (activeClaim != null)
+                {
+                    var identityResult = await _userManager.ReplaceClaimAsync(user, activeClaim, newActiveClaim);
+                    if (!identityResult.Succeeded)
+                    {
+                        return EasyResult.Error("修改用户状态失败");
+                    }
+                }
+                else
+                {
+                    var identityResult = await _userManager.AddClaimAsync(user, newActiveClaim);
+                    if (!identityResult.Succeeded)
+                    {
+                        return EasyResult.Error("修改用户状态失败");
+                    }
+                }
+            }
+
+            return EasyResult.Ok();
+        }
+
+        [Route("api/user/{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute]string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    return EasyResult.Error("删除用户失败");
+                }
+            }
+            return EasyResult.Ok();
+        }
+
+        [Route("api/user/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute]string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            UserViewModel result = null;
+            if (user != null)
+            {
+                var claims = await _userManager.GetClaimsAsync(user);
+
+                var isActive = claims.FirstOrDefault(_ => _.Type == "isactive")?.Value == null
+                      ? false : bool.Parse(claims.FirstOrDefault(_ => _.Type == "isactive").Value);
+
+                var role = string.IsNullOrWhiteSpace(claims.FirstOrDefault(_ => _.Type == "role")?.Value)
+                    ? "游客"
+                    : claims.FirstOrDefault(_ => _.Type == "role")?.Value;
+
+                result = new UserViewModel
+                {
+                    Id = id,
+                    Email = user.Email,
+                    IsActive = isActive,
+                    Mobile = user.PhoneNumber,
+                    Role = role,
+                    UserName = user.UserName
+                };
+            }
+            return EasyResult.Ok(result);
+        }
+
+        [Route("api/user/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserAsync([FromRoute]string id,[FromBody]UserViewModel viewModel)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                user.PhoneNumber = viewModel.Mobile;
+                user.Email = viewModel.Email;
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    return EasyResult.Error("更新用户失败");
+                }
+            }
+
+            return EasyResult.Ok();
         }
     }
 }

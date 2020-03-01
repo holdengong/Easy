@@ -1,4 +1,4 @@
-# easy.vue.admin
+# sso
 
 ## Project setup
 ```

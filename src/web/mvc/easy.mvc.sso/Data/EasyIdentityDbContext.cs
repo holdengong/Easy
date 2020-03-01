@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Identity.API.Data
+namespace Easy.Mvc.Sso.Data
 {
     public class EasyIdentityDbContext : IdentityDbContext
     {

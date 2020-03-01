@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddHttpClient();
 
-            services.AddIdentity();
+            services.AddEasyIdentity();
 
             services.AddAuthentication(EasySsoConsts.CookieSchema)
                .AddCookie(EasySsoConsts.CookieSchema);
@@ -38,7 +38,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddHttpClient();
 
-            services.AddIdentity();
+            services.AddEasyIdentity();
 
             services.AddAuthentication(EasySsoConsts.CookieSchema)
                 .AddCookie(EasySsoConsts.CookieSchema);
@@ -64,10 +64,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.ClientSecret = clientSecret;
                 options.ResponseType = ResponseTypes.Code;
                 options.SaveTokens = true;
-                
+                options.RequireHttpsMetadata = false;//允许http
+
                 ProcessClaims(options);
                 ProcessScode(options);
             });
+
+            services.AddEasyIdentity();
         }
 
         private static void ProcessScode(OpenIdConnectOptions options)
@@ -105,7 +108,7 @@ namespace Microsoft.Extensions.DependencyInjection
             .AddOpenIdConnect(EasySsoConsts.OidcSchema, configureOptions);
         }
 
-        private static void AddIdentity(this IServiceCollection services)
+        public static void AddEasyIdentity(this IServiceCollection services)
         {
             services.AddIdentity<IdentityUser, IdentityRole>(config =>
             {
@@ -124,7 +127,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddDbContext<IdentityDbContext>(config =>
             {
-                config.UseMySql("Server=localhost;Database=AspNetIdentity;User=root;Password=0402_gyt;");
+                config.UseMySql("Server=148.70.138.124;Database=aspnetidentity;User=root;Password=easy_framework;");
             });
         }
     }

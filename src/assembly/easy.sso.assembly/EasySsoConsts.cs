@@ -23,8 +23,10 @@ namespace Easy.Sso.Assembly
             "offline_access"
         };
 
-        public const string TokenEndpoint = "/extension/gettoken";
+        public const string TOKEN_ENDPOINT = "/extension/gettoken";
 
-        public const string UserInfoEndpoint = "/extension/getuserinfo";
+        public const string USERINFO_ENDPOINT = "/extension/getuserinfo";
+
+        public const string LOGOUT_ENDPOINT = "/extension/logout";
     }
 }

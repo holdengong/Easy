@@ -1,32 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Admin.WebApp.Controllers
+namespace Easy.Mvc.Admin.Controllers
 {
+    //[Authorize]
+    [Route("{*url}", Order = 999)]
     public class HomeController : Controller
     {
-        public HomeController()
-        {
-        }
-
-        [Authorize]
         public IActionResult Index()
         {
-            var viewModel = new ClaimViewModel
-            {
-                Claims = User.Claims.ToList()
-            };
-            return View(viewModel);
+            return View();
         }
-    }
-
-    public class ClaimViewModel
-    { 
-        public List<Claim> Claims { get; set; }
     }
 }

@@ -37,3 +37,5 @@
 /src/Web/mvc/easy.mvc.sso/bin
 /src/Web/mvc/easy.mvc.sso/obj
 /src/Web/mvc/easy.mvc.sso/wwwroot
+/src/web/mvc/easy.mvc.sso/appsettings.json
+/src/web/mvc/easy.mvc.sso/appsettings.Development.json

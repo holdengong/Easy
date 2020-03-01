@@ -7,7 +7,8 @@ namespace Microsoft.AspNetCore.Builder
         public static IApplicationBuilder UseEasyAuth(this IApplicationBuilder builder)
         {
             builder.UseMiddleware<TokenMiddleware>()
-                .UseMiddleware<UserInfoMiddleware>();
+                .UseMiddleware<UserInfoMiddleware>()
+                .UseMiddleware<LogoutMiddleware>();
             return builder;
         }
     }

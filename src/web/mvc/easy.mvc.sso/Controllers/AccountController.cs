@@ -1,8 +1,6 @@
-﻿using Easy.Common.Assembly;
-using Easy.Mvc.Sso.Models;
+﻿using Easy.Mvc.Sso.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -32,13 +30,13 @@ namespace Identity.API.Controllers
                 var signInResult = await _signInManager.PasswordSignInAsync(user, vm.Password, false, false);
                 if (signInResult.Succeeded)
                 {
-                    return EasyResponse.Success();
+                    return EasyResult.Ok();
                 }
 
-                return EasyResponse.Fail("用户名或密码错误");
+                return EasyResult.Error("用户名或密码错误");
             }
 
-            return EasyResponse.Fail("用户名或密码错误");
+            return EasyResult.Error("用户名或密码错误");
         }
 
         [HttpPost]

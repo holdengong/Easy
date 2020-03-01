@@ -11,7 +11,6 @@ namespace Identity.API.SeedWorks
         {
             using (var context = serviceProvider.GetRequiredService<PersistedGrantDbContext>())
             {
-                context.Database.Migrate();
             }
         }
     }
