@@ -17,6 +17,7 @@ namespace Easy.Mvc.Admin.Models
         public string HierarchyCode { get; set; }
         public string Name { get; set; }
         public string Remarks { get; set; }
+        public string Icon { get; set; }
         public List<PermissionDtoForTree> Children { get; set; }
     }
 }

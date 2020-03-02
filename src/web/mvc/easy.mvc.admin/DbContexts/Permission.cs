@@ -49,5 +49,11 @@ namespace Easy.Mvc.Admin.DbContexts
         /// 排序
         /// </summary>
         public int Sort { get; set; }
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [MaxLength(50)]
+        public string Icon { get; set; }
     }
 }

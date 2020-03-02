@@ -8,12 +8,22 @@
 
     <el-card>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="10">
           <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="5">
+            <el-switch style="margin-bottom:0px"
+            v-model="menuOnly"
+            active-text="仅显示菜单"
+            inactive-text=""
+            @change="getPermissions()">
+            </el-switch>
+        </el-col>
+        
+        <el-col :span="9">
           <el-button type="primary" @click="addDialogFormVisible=true">新增顶级权限</el-button>
         </el-col>
+       
       </el-row>
       <el-table
         :data="tableData.filter(data => !filterText || data.name.toLowerCase().includes(filterText.toLowerCase()))"
@@ -24,10 +34,18 @@
         default-expand-all
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-table-column prop="name" label="名称" sortable width="180"></el-table-column>
+        <el-table-column prop="name" label="名称" sortable width="180">
+          <template slot-scope="scope">
+            <i :class="scope.row.icon"></i>
+            <span style="margin-left:5px">{{scope.row.name}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="hierarchyCode" label="权限点" sortable width="180"></el-table-column>
         <el-table-column prop="path" label="地址" sortable width="180"></el-table-column>
-        <el-table-column prop="type" label="类型">
+        <el-table-column
+          prop="type"
+          label="类型"
+        >
           <template slot-scope="scope">
             <el-tag type="success" v-show="scope.row.type==0">菜单</el-tag>
             <el-tag type="info" v-show="scope.row.type==1">功能</el-tag>
@@ -36,9 +54,15 @@
         <el-table-column prop="remarks" label="备注" sortable width="180"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="openAddDialogue(scope.row.id)">新增子节点</el-button>
+            <el-button
+              type="text"
+              v-show="scope.row.type==0"
+              @click="openAddDialogue(scope.row.id)"
+            >新增子节点</el-button>
             <el-button type="text" @click="openModifyDialogue(scope.row.id)">修改</el-button>
             <el-button type="text" v-show="ifEnd(scope.row)" @click="remove(scope.row.id)">删除</el-button>
+            <el-button type="text" @click="moveUp(scope.row.id)">上移</el-button>
+            <el-button type="text" @click="moveDown(scope.row.id)">下移</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -57,6 +81,9 @@
           </el-form-item>
           <el-form-item label="路径" prop="path">
             <el-input v-model="addForm.path"></el-input>
+          </el-form-item>
+          <el-form-item label="菜单图标" prop="icon">
+            <el-input v-model="addForm.icon"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="remarks">
             <el-input
@@ -87,6 +114,9 @@
           </el-form-item>
           <el-form-item label="路径" prop="path">
             <el-input v-model="modifyForm.path"></el-input>
+          </el-form-item>
+          <el-form-item label="菜单图标" prop="icon">
+            <el-input v-model="modifyForm.icon"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="remarks">
             <el-input
@@ -169,8 +199,8 @@ export default {
           this.$message.success("操作成功");
           this.addDialogFormVisible = false;
           this.getPermissions();
-        }else{
-            this.$message.error(result.message)
+        } else {
+          this.$message.error(result.message);
         }
       });
     },
@@ -190,7 +220,11 @@ export default {
     },
     editPermission() {},
     async getPermissions() {
-      const { data: result } = await this.$http.get("permissions");
+        let url = "permissions"
+        if(this.menuOnly){
+            url +="?scope=menu";
+        }
+      const { data: result } = await this.$http.get(url);
       if (result.code != 0) {
         this.$message.error(result.message);
       } else {
@@ -201,25 +235,42 @@ export default {
       return data.children == null;
     },
     tableRowClassName({ row }) {
-      console.log(row);
       if (row.type == 1) {
         return "menu-row";
       } else if (row.type == 2) {
         return "function-row";
       }
       return "";
+    },
+    async moveUp(id) {
+      const { data: result } = await this.$http.put(
+        `/permission/${id}/position?action=up`
+      );
+      if (result.code == 0) {
+        this.getPermissions();
+      }
+    },
+    async moveDown(id) {
+      const { data: result } = await this.$http.put(
+        `/permission/${id}/position?action=down`
+      );
+      if (result.code == 0) {
+        this.getPermissions();
+      }
     }
   },
 
   data() {
     return {
+      menuOnly:false,
       filterText: "",
       addForm: {
         name: "",
         path: "",
         code: "",
         type: null,
-        remarks: ""
+        remarks: "",
+        icon: ""
       },
       modifyForm: {},
       addDialogFormVisible: false,

@@ -45,8 +45,9 @@ namespace Easy.Mvc.Admin.Controllers
                 Type = viewModel.Type,
                 Remarks = viewModel.Remarks,
                 Id = Guid.NewGuid().ToString(),
-                Sort = sort
-            }.OpsBeforeAdd<Permission>();
+                Sort = sort,
+                Icon = viewModel.Icon
+            }.OpsBeforeAdd<Permission>(HttpContext);
 
             AdminDbContext.Permissions.Add(entity);
             AdminDbContext.SaveChanges();
@@ -72,6 +73,7 @@ namespace Easy.Mvc.Admin.Controllers
                 entity.Path = viewModel.Path;
                 entity.Type = viewModel.Type;
                 entity.Remarks = viewModel.Remarks;
+                entity.Icon = viewModel.Icon;
                 AdminDbContext.Permissions.Update(entity);
                 AdminDbContext.SaveChanges();
             }
@@ -125,7 +127,8 @@ namespace Easy.Mvc.Admin.Controllers
                     Name = entity.Name,
                     Path = entity.Path,
                     Remarks = entity.Remarks,
-                    Type = entity.Type
+                    Type = entity.Type,
+                    Icon = entity.Icon
                 };
 
                 return EasyResult.Ok(result);
@@ -134,15 +137,57 @@ namespace Easy.Mvc.Admin.Controllers
             return EasyResult.Ok();
         }
 
+        [HttpPut]
+        [Route("api/permission/{id}/position")]
+        public IActionResult MovePosition([FromRoute]string id,[FromQuery]string action)
+        {
+            var entity = AdminDbContext.Permissions.FirstOrDefault(_ => _.Id == id);
+            if (entity != null)
+            {
+                if (action == "up")
+                {
+                    var previousEntity = AdminDbContext.Permissions.FirstOrDefault(_ => _.ParentId == entity.ParentId && _.Sort == entity.Sort - 1);
+                    if (previousEntity != null)
+                    {
+                        previousEntity.Sort += 1;
+                        entity.Sort -= 1;
+                    }
+                    AdminDbContext.SaveChanges();
+                }
+
+                if (action == "down")
+                {
+                    var nextEntity = AdminDbContext.Permissions.FirstOrDefault(_ => _.ParentId == entity.ParentId && _.Sort == entity.Sort + 1);
+                    if (nextEntity != null)
+                    {
+                        nextEntity.Sort -= 1;
+                        entity.Sort += 1;
+                    }
+                    AdminDbContext.SaveChanges();
+                }
+
+                return EasyResult.Ok();
+            }
+
+            return EasyResult.Ok();
+        }
+
         /// <summary>
         /// 获取权限树
         /// </summary>
+        /// <param name="scope">范围 menu：只返回菜单</param>
         /// <returns></returns>
         [HttpGet]
         [Route("api/permissions")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery]string scope)
         {
             var entities = AdminDbContext.Permissions.ToList();
+
+            if (scope == "menu")
+            {
+                entities = entities.Where(_ => _.Type == PermissionType.菜单).ToList();
+            }
+
             var result = ConvertEntitiesToTree(entities);
 
             return EasyResult.Ok(result);
@@ -175,7 +220,9 @@ namespace Easy.Mvc.Admin.Controllers
                     Name = entity.Name,
                     Path = entity.Path,
                     Remarks = entity.Remarks,
-                    Type = entity.Type
+                    Type = entity.Type,
+                    Icon = string.IsNullOrWhiteSpace(entity.Icon) ? "el-icon-menu"
+                        : entity.Icon
                 };
             }
 
@@ -195,7 +242,9 @@ namespace Easy.Mvc.Admin.Controllers
                         Name = childEntity.Name,
                         Path = childEntity.Path,
                         Type = childEntity.Type,
-                        Remarks = childEntity.Remarks
+                        Remarks = childEntity.Remarks,
+                        Icon = string.IsNullOrWhiteSpace(childEntity.Icon) ? "el-icon-menu"
+                        : childEntity.Icon
                     };
 
                     branchChild = RecursivelyConvertToTree(childEntity, entities, branchChild);

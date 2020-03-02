@@ -12,8 +12,18 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="isMenuCollapse?'64px':'200px'">
-        <div class="toggle-button" @click="toggleButtonClick">|||</div>
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#ffd04b"
+        <!-- <div class="toggle-button" @click="toggleButtonClick">|||</div> -->
+        <template>
+          <div class="left">
+            <el-menu  background-color="#333744" text-color="#fff" active-text-color="#ffd04b"
+        :collapse="isMenuCollapse" :collapse-transition="false" router 
+        :default-active="activePath">
+              <menutree :data="menuData"></menutree>
+            </el-menu>
+          </div>
+        </template>
+
+        <!-- <el-menu background-color="#333744" text-color="#fff" active-text-color="#ffd04b"
         unique-opened :collapse="isMenuCollapse" :collapse-transition="false" router 
         :default-active="activePath">
             <el-submenu :index="item.id" v-for='item in menuList' :key='item.id'>
@@ -30,7 +40,7 @@
                   </template>
                 </el-menu-item>
             </el-submenu>
-        </el-menu>
+        </el-menu>-->
       </el-aside>
       <!-- 内容区域 -->
       <el-main>
@@ -41,51 +51,48 @@
 </template>
 
 <script>
+import menutree from "../components/MenuTree";
 export default {
+  async mounted() {
+    const { data: result } = await this.$http.get("/permissions?scope=menu");
+    this.menuData = result.data;
+  },
   data() {
     return {
-      menuList:[],
-      iconsObj:
-      {
-        '用户管理':'el-icon-user',
-        '权限管理':'el-icon-lock',
-        '商品管理':'el-icon-shopping-bag-1',
-        '订单管理':'el-icon-s-finance',
-        '数据统计':'el-icon-pie-chart'
-      },
-      isMenuCollapse:false,
-      activePath:''
-    }
+      menuList: [],
+      isMenuCollapse: false,
+      activePath: "",
+      menuData: []
+    };
   },
-  created(){
-    this.getMenuList()
-    this.activePath = window.sessionStorage.getItem('activePath')
+  created() {
+    this.getMenuList();
+    this.activePath = window.sessionStorage.getItem("activePath");
   },
   methods: {
     logout() {
-      window.sessionStorage.clear()
+      window.sessionStorage.clear();
       window.location.href = "https://localhost:10001/extension/logout";
     },
-    async getMenuList(){
-      const {data:result} = await this.$http.get('menus')
-      if(result.code!=0){
-        return this.$message.error(result.message)
+    async getMenuList() {
+      const { data: result } = await this.$http.get("menus");
+      if (result.code != 0) {
+        return this.$message.error(result.message);
       }
-      console.log(result)
-      this.menuList = result.data
+      console.log(result);
+      this.menuList = result.data;
     },
-    toggleButtonClick(){
-      this.isMenuCollapse = !this.isMenuCollapse
+    toggleButtonClick() {
+      this.isMenuCollapse = !this.isMenuCollapse;
     },
-    saveNavState(activePath){
-      window.sessionStorage.setItem('activePath',activePath)
-      this.activePath = activePath
+    saveNavState(activePath) {
+      window.sessionStorage.setItem("activePath", activePath);
+      this.activePath = activePath;
     }
-  }
+  },
+  components: { menutree: menutree }
 };
 </script>
-
-
 
 <style lang="less" scoped>
 .el-header {
@@ -107,7 +114,7 @@ export default {
 
 .el-aside {
   background-color: #333744;
-  .el-menu{
+  .el-menu {
     border-right: none;
   }
 }
@@ -120,11 +127,11 @@ export default {
   height: 100%;
 }
 
-.toggle-button{
+.toggle-button {
   background-color: #4a5064;
   font-size: 10px;
   line-height: 24px;
-  color:#fff;
+  color: #fff;
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
