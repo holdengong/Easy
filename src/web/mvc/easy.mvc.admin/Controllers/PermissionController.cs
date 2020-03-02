@@ -34,6 +34,8 @@ namespace Easy.Mvc.Admin.Controllers
                 return EasyResult.Error("编码已存在");
             }
 
+            var sort = AdminDbContext.Permissions.Count(_ => _.ParentId == viewModel.ParentId) + 1;
+
             var entity = new Permission
             {
                 Code = viewModel.Code,
@@ -42,8 +44,9 @@ namespace Easy.Mvc.Admin.Controllers
                 Path = viewModel.Path,
                 Type = viewModel.Type,
                 Remarks = viewModel.Remarks,
-                Id = Guid.NewGuid().ToString()
-            };
+                Id = Guid.NewGuid().ToString(),
+                Sort = sort
+            }.OpsBeforeAdd<Permission>();
 
             AdminDbContext.Permissions.Add(entity);
             AdminDbContext.SaveChanges();
@@ -188,7 +191,7 @@ namespace Easy.Mvc.Admin.Controllers
                     {
                         Id = childEntity.Id,
                         Code = childEntity.Code,
-                        HierarchyCode = $"{branch.Code}.{childEntity.Code}",
+                        HierarchyCode = $"{branch.HierarchyCode}.{childEntity.Code}",
                         Name = childEntity.Name,
                         Path = childEntity.Path,
                         Type = childEntity.Type,

@@ -15,42 +15,52 @@
           <el-button type="primary" @click="addDialogFormVisible=true">新增顶级权限</el-button>
         </el-col>
       </el-row>
-      <el-tree
-        class="filter-tree"
-        :data="data"
-        :props="defaultProps"
+      <el-table
+        :data="tableData.filter(data => !filterText || data.name.toLowerCase().includes(filterText.toLowerCase()))"
+        style="width: 100%;margin-bottom: 20px;margin-top: 20px"
+        :row-class-name="tableRowClassName"
+        row-key="id"
+        border
         default-expand-all
-        :filter-node-method="filterNode"
-        ref="tree"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-          <span>{{ node.label }}</span>
-          <span>
-            <el-button type="text" size="mini" @click.stop="() => openAddDialogue(data)">添加子项</el-button>
-            <el-button type="text" size="mini" @click.stop="() => openModifyDialogue(node, data)">编辑</el-button>
-            <el-button v-show=ifEnd(data) type="text" size="mini" @click.stop="() => remove(node, data)">删除</el-button>
-          </span>
-        </span>
-      </el-tree>
+        <el-table-column prop="name" label="名称" sortable width="180"></el-table-column>
+        <el-table-column prop="hierarchyCode" label="权限点" sortable width="180"></el-table-column>
+        <el-table-column prop="path" label="地址" sortable width="180"></el-table-column>
+        <el-table-column prop="type" label="类型">
+          <template slot-scope="scope">
+            <el-tag type="success" v-show="scope.row.type==0">菜单</el-tag>
+            <el-tag type="info" v-show="scope.row.type==1">功能</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="remarks" label="备注" sortable width="180"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="text" @click="openAddDialogue(scope.row.id)">新增子节点</el-button>
+            <el-button type="text" @click="openModifyDialogue(scope.row.id)">修改</el-button>
+            <el-button type="text" v-show="ifEnd(scope.row)" @click="remove(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-      <el-dialog title="添加权限" :visible.sync="addDialogFormVisible" @close="clearFields">
-        <el-form :model="form" :rules="formRules" ref="formRef" label-width="80px">
+      <el-dialog title="添加权限" :visible.sync="addDialogFormVisible" @close="clearAddFields">
+        <el-form :model="addForm" :rules="formRules" ref="addFormRef" label-width="80px">
           <el-form-item label="名称" prop="name">
-            <el-input v-model="form.name"></el-input>
+            <el-input v-model="addForm.name"></el-input>
           </el-form-item>
           <el-form-item label="类型" prop="type">
-            <el-radio v-model="form.type" label="1">菜单</el-radio>
-            <el-radio v-model="form.type" label="2">功能</el-radio>
+            <el-radio v-model="addForm.type" label="0">菜单</el-radio>
+            <el-radio v-model="addForm.type" label="1">功能</el-radio>
           </el-form-item>
           <el-form-item label="编码" prop="code">
-            <el-input v-model="form.code"></el-input>
+            <el-input v-model="addForm.code"></el-input>
           </el-form-item>
           <el-form-item label="路径" prop="path">
-            <el-input v-model="form.path"></el-input>
+            <el-input v-model="addForm.path"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="remarks">
             <el-input
-              v-model="form.remarks"
+              v-model="addForm.remarks"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4}"
               placeholder="请输入内容"
@@ -63,24 +73,24 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="修改权限" :visible.sync="modifyDialogFormVisible" @close="clearFields">
-        <el-form :model="form" :rules="formRules" ref="formRef" label-width="80px">
+      <el-dialog title="修改权限" :visible.sync="modifyDialogFormVisible" @close="clearModifyFields">
+        <el-form :model="modifyForm" :rules="formRules" ref="modifyFormRef" label-width="80px">
           <el-form-item label="名称" prop="name">
-            <el-input v-model="form.name"></el-input>
+            <el-input v-model="modifyForm.name"></el-input>
           </el-form-item>
           <el-form-item label="类型" prop="type">
-            <el-radio v-model="form.type" label="1">菜单</el-radio>
-            <el-radio v-model="form.type" label="2">功能</el-radio>
+            <el-radio v-model="modifyForm.type" label="0">菜单</el-radio>
+            <el-radio v-model="modifyForm.type" label="1">功能</el-radio>
           </el-form-item>
           <el-form-item label="编码" prop="code">
-            <el-input v-model="form.code"></el-input>
+            <el-input v-model="modifyForm.code"></el-input>
           </el-form-item>
           <el-form-item label="路径" prop="path">
-            <el-input v-model="form.path"></el-input>
+            <el-input v-model="modifyForm.path"></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="remarks">
             <el-input
-              v-model="form.remarks"
+              v-model="modifyForm.remarks"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4}"
               placeholder="请输入内容"
@@ -96,14 +106,18 @@
   </div>
 </template>
 
+<style lang="less">
+.el-table .menu-row {
+  background: white;
+}
+
+.el-table .function-row {
+  background: white;
+}
+</style>
+
 <script>
 export default {
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    }
-  },
-
   created: function() {
     this.getPermissions();
   },
@@ -113,33 +127,27 @@ export default {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
-    clearFields() {
-      this.$refs.formRef.resetFields();
+    clearAddFields() {
+      this.$refs.addFormRef.resetFields();
     },
-    openAddDialogue(data) {
+    clearModifyFields() {
+      this.$refs.modifyFormRef.resetFields();
+    },
+    openAddDialogue(parentId) {
       this.addDialogFormVisible = true;
-      this.form.parentId = data.id;
-      console.log(data);
+      this.addForm.parentId = parentId;
     },
-    async openModifyDialogue(node, rowData) {
-      const { data: result } = await this.$http.get(
-        `/permission/${rowData.id}`
-      );
-      this.form.id = rowData.id;
-      this.form.name = result.data.name;
-      this.form.path = result.data.path;
-      this.form.code = result.data.code;
-      this.form.type = result.data.type.toString();
-      this.form.remarks = result.data.remarks;
+    async openModifyDialogue(id) {
+      const { data: result } = await this.$http.get(`/permission/${id}`);
+      this.modifyForm = result.data;
+      this.modifyForm.type = this.modifyForm.type.toString();
 
       this.modifyDialogFormVisible = true;
     },
-    remove(node, data) {
+    remove(id) {
       this.$confirm("确认删除？")
-        .then(async() => {
-          const { data: result } = await this.$http.delete(
-            `/permission/${data.id}`
-          );
+        .then(async () => {
+          const { data: result } = await this.$http.delete(`/permission/${id}`);
           if (result.code != 0) {
             this.$message.error(result.message);
           } else {
@@ -150,25 +158,27 @@ export default {
         .catch(() => {});
     },
     addPermission() {
-      this.$refs.formRef.validate(async valid => {
+      this.$refs.addFormRef.validate(async valid => {
         if (!valid) return;
-        this.form.type = parseInt(this.form.type);
+        this.addForm.type = parseInt(this.addForm.type);
         const { data: result } = await this.$http.post(
           "/permissions",
-          this.form
+          this.addForm
         );
         if (result.code == 0) {
           this.$message.success("操作成功");
           this.addDialogFormVisible = false;
           this.getPermissions();
+        }else{
+            this.$message.error(result.message)
         }
       });
     },
     async modifyPermission() {
-      this.form.type = parseInt(this.form.type);
+      this.modifyForm.type = parseInt(this.modifyForm.type);
       const { data: result } = await this.$http.put(
-        `permission/${this.form.id}`,
-        this.form
+        `permission/${this.modifyForm.id}`,
+        this.modifyForm
       );
       if (result.code != 0) {
         this.$message.error(result.message);
@@ -184,24 +194,34 @@ export default {
       if (result.code != 0) {
         this.$message.error(result.message);
       } else {
-        this.data = result.data;
+        this.tableData = result.data;
       }
     },
-    ifEnd(data){
-        return data.children==null;
+    ifEnd(data) {
+      return data.children == null;
+    },
+    tableRowClassName({ row }) {
+      console.log(row);
+      if (row.type == 1) {
+        return "menu-row";
+      } else if (row.type == 2) {
+        return "function-row";
+      }
+      return "";
     }
   },
 
   data() {
     return {
       filterText: "",
-      form: {
+      addForm: {
         name: "",
         path: "",
         code: "",
-        type: 0,
+        type: null,
         remarks: ""
       },
+      modifyForm: {},
       addDialogFormVisible: false,
       modifyDialogFormVisible: false,
       formRules: {
@@ -239,7 +259,7 @@ export default {
           }
         ]
       },
-      data: [],
+      tableData: [],
       defaultProps: {
         children: "children",
         label: "name"

@@ -19,5 +19,19 @@ namespace Easy.Common.Assembly
         [MaxLength(50)]
         public string UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
+
+        public T OpsBeforeAdd<T>()
+            where T : BaseEntity
+        {
+            CreatedOn = DateTime.Now;
+            return this as T;
+        }
+
+        public T OpsBeforeUpdate<T>()
+            where T:BaseEntity
+        {
+            UpdatedOn = DateTime.Now;
+            return this as T;
+        }
     }
 }
