@@ -1,6 +1,8 @@
 using AutoMapper;
+using Easy.Mvc.Admin.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +38,12 @@ namespace Admin.WebApp
             });
 
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddDbContext<AdminDbContext>(config =>
+            {
+                config.UseMySql(Configuration["AdminDbConnectionString"],
+                    sql => sql.MigrationsAssembly(typeof(Startup).Assembly.GetName().Name));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

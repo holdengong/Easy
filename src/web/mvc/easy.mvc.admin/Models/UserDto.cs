@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Easy.Mvc.Admin.Models
 {
-    public class UserViewModel
+    public class UserDto
     {
         public string Id { get; set; }
         public string UserName { get; set; }

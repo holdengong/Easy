@@ -22,6 +22,7 @@ namespace Easy.Mvc.Admin.Controllers
                 {
                   new MenuViewModel("用户列表","/users"),
                 }
+
             });
 
             result.Add(new MenuViewModel

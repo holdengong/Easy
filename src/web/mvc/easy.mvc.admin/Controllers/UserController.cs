@@ -38,7 +38,7 @@ namespace Easy.Mvc.Admin.Controllers
             int skip = (pageIndex - 1) * pageSize;
             var pagedUsers = users.Skip(skip).Take(pageSize).ToList();
 
-            var result = new List<UserViewModel>();
+            var result = new List<UserDto>();
 
             foreach (var user in pagedUsers)
             {
@@ -51,7 +51,7 @@ namespace Easy.Mvc.Admin.Controllers
                     ? "游客" 
                     : claims.FirstOrDefault(_ => _.Type == "role")?.Value;
 
-                result.Add(new UserViewModel
+                result.Add(new UserDto
                 {
                     Id = user.Id,
                     Mobile = user.PhoneNumber,
@@ -67,7 +67,7 @@ namespace Easy.Mvc.Admin.Controllers
 
         [Route("api/users")]
         [HttpPost]
-        public async Task<IActionResult> AddUserAsync([FromBody]UserViewModel viewModel)
+        public async Task<IActionResult> AddUserAsync([FromBody]UserDto viewModel)
         {
             var user = await _userManager.FindByNameAsync(viewModel.UserName);
             if (user != null)
@@ -95,7 +95,7 @@ namespace Easy.Mvc.Admin.Controllers
 
         [Route("api/user/{id}/state")]
         [HttpPut]
-        public async Task<IActionResult> UpdateUserStateAsync([FromRoute]string id,[FromBody]UserViewModel viewModel)
+        public async Task<IActionResult> UpdateUserStateAsync([FromRoute]string id,[FromBody]UserDto viewModel)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)
@@ -145,7 +145,7 @@ namespace Easy.Mvc.Admin.Controllers
         public async Task<IActionResult> GetUserByIdAsync([FromRoute]string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            UserViewModel result = null;
+            UserDto result = null;
             if (user != null)
             {
                 var claims = await _userManager.GetClaimsAsync(user);
@@ -157,7 +157,7 @@ namespace Easy.Mvc.Admin.Controllers
                     ? "游客"
                     : claims.FirstOrDefault(_ => _.Type == "role")?.Value;
 
-                result = new UserViewModel
+                result = new UserDto
                 {
                     Id = id,
                     Email = user.Email,
@@ -172,7 +172,7 @@ namespace Easy.Mvc.Admin.Controllers
 
         [Route("api/user/{id}")]
         [HttpPut]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute]string id,[FromBody]UserViewModel viewModel)
+        public async Task<IActionResult> UpdateUserAsync([FromRoute]string id,[FromBody]UserDto viewModel)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)

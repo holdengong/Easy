@@ -122,10 +122,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     RequireUppercase = false
                 };
             })
-            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddEntityFrameworkStores<EasyIdentityDbContext>()
             .AddDefaultTokenProviders();
 
-            services.AddDbContext<IdentityDbContext>(config =>
+            services.AddDbContext<EasyIdentityDbContext>(config =>
             {
                 config.UseMySql("Server=148.70.138.124;Database=aspnetidentity;User=root;Password=easy_framework;");
             });
