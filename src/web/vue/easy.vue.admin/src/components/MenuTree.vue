@@ -10,7 +10,7 @@
           <menutree :data="menu.children"></menutree>
         </label>
       </el-submenu>
-      <el-menu-item v-else-if="menu.path.includes('http')" index>
+      <el-menu-item v-else-if="menu.path && menu.path.includes('http')" index>
         <i :class="menu.icon"></i>
         <span slot="title">
           <a :href="menu.path" target="_blank" style="text-decoration:none">{{menu.name}}</a>

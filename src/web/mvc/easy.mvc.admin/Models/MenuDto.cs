@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Easy.Mvc.Admin.Models
 {
-    public class PermissionDto
+    public class MenuDto
     {
         public string Id { get; set; }
         public PermissionType Type { get; set; }

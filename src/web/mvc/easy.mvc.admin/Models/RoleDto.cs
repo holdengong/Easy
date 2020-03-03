@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace Easy.Mvc.Admin.Models
 {
-    /// <summary>
-    /// 权限类型
-    /// </summary>
-    public enum PermissionType
+    public class RoleDto
     {
-        菜单 = 0,
-        功能 = 1
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Easy.Mvc.Admin.DbContexts
         { 
         }
 
-        public virtual DbSet<Permission> Permissions { get; set; }
+        public virtual DbSet<Menu> Menus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

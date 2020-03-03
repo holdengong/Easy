@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Easy.Mvc.Admin.DbContexts
 {
-    public class Permission : BaseEntity
+    public class Menu : BaseEntity
     {
         /// <summary>
         /// 权限类型

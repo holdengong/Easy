@@ -4,7 +4,8 @@ Vue.use(Router)
 
 import Home from '../components/Home'
 import Users from '../components/Users'
-import Permissions from '../components/Permissions'
+import Menus from '../components/Menus'
+import Roles from '../components/Roles'
 
 let router = new Router(
     {
@@ -13,7 +14,8 @@ let router = new Router(
             {
                 path: '/', component: Home, children: [
                     { path: '/users', component: Users },
-                    {path:'/permissions',component:Permissions}
+                    {path:'/menus',component:Menus},
+                    {path:'roles',component:Roles}
                 ]
             },
         ]

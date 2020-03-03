@@ -54,7 +54,7 @@
 import menutree from "../components/MenuTree";
 export default {
   async mounted() {
-    const { data: result } = await this.$http.get("/permissions?scope=menu");
+    const { data: result } = await this.$http.get("/menus?scope=menu");
     this.menuData = result.data;
   },
   data() {

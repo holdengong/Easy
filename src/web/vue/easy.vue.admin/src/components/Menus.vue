@@ -2,8 +2,7 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{path:'/'}">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-      <el-breadcrumb-item>权限列表</el-breadcrumb-item>
+      <el-breadcrumb-item>菜单列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card>
@@ -17,12 +16,12 @@
             v-model="menuOnly"
             active-text="仅显示菜单"
             inactive-text
-            @change="getPermissions()"
+            @change="getMenus()"
           ></el-switch>
         </el-col>
 
         <el-col :span="9">
-          <el-button type="primary" @click="addDialogFormVisible=true">新增顶级权限</el-button>
+          <el-button type="primary" @click="addDialogFormVisible=true">新增顶级节点</el-button>
         </el-col>
       </el-row>
       <el-table
@@ -93,7 +92,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="addDialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addPermission">确 定</el-button>
+          <el-button type="primary" @click="addMenu">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -126,7 +125,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="modifyDialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="modifyPermission">确 定</el-button>
+          <el-button type="primary" @click="modifyMenu">确 定</el-button>
         </div>
       </el-dialog>
     </el-card>
@@ -146,7 +145,7 @@
 <script>
 export default {
   created: function() {
-    this.getPermissions();
+    this.getMenus();
   },
 
   methods: {
@@ -165,7 +164,7 @@ export default {
       this.addForm.parentId = parentId;
     },
     async openModifyDialogue(id) {
-      const { data: result } = await this.$http.get(`/permission/${id}`);
+      const { data: result } = await this.$http.get(`/menu/${id}`);
       this.modifyForm = result.data;
       this.modifyForm.type = this.modifyForm.type.toString();
 
@@ -174,37 +173,37 @@ export default {
     remove(id) {
       this.$confirm("确认删除？")
         .then(async () => {
-          const { data: result } = await this.$http.delete(`/permission/${id}`);
+          const { data: result } = await this.$http.delete(`/menu/${id}`);
           if (result.code != 0) {
             this.$message.error(result.message);
           } else {
             this.$message.success("操作成功");
-            this.getPermissions();
+            this.getMenus();
           }
         })
         .catch(() => {});
     },
-    addPermission() {
+    addMenu() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) return;
         this.addForm.type = parseInt(this.addForm.type);
         const { data: result } = await this.$http.post(
-          "/permissions",
+          "/menus",
           this.addForm
         );
         if (result.code == 0) {
           this.$message.success("操作成功");
           this.addDialogFormVisible = false;
-          this.getPermissions();
+          this.getMenus();
         } else {
           this.$message.error(result.message);
         }
       });
     },
-    async modifyPermission() {
+    async modifyMenu() {
       this.modifyForm.type = parseInt(this.modifyForm.type);
       const { data: result } = await this.$http.put(
-        `permission/${this.modifyForm.id}`,
+        `menu/${this.modifyForm.id}`,
         this.modifyForm
       );
       if (result.code != 0) {
@@ -212,12 +211,12 @@ export default {
       } else {
         this.$message.success("操作成功");
         this.modifyDialogFormVisible = false;
-        this.getPermissions();
+        this.getMenus();
       }
     },
-    editPermission() {},
-    async getPermissions() {
-      let url = "permissions";
+    editMenu() {},
+    async getMenus() {
+      let url = "menus";
       if (this.menuOnly) {
         url += "?scope=menu";
       }
@@ -241,25 +240,25 @@ export default {
     },
     async moveUp(id, type) {
       const { data: result } = await this.$http.put(
-        `/permission/${id}/position?action=up`
+        `/menu/${id}/position?action=up`
       );
       if (result.code == 0) {
         if (type == 0) {
           window.location.reload();
         } else {
-          this.getPermissions();
+          this.getMenus();
         }
       }
     },
     async moveDown(id, type) {
       const { data: result } = await this.$http.put(
-        `/permission/${id}/position?action=down`
+        `/menu/${id}/position?action=down`
       );
       if (result.code == 0) {
         if (type == 0) {
           window.location.reload();
         } else {
-          this.getPermissions();
+          this.getMenus();
         }
       }
     }
