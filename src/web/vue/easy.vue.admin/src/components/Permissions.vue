@@ -12,18 +12,18 @@
           <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
         </el-col>
         <el-col :span="5">
-            <el-switch style="margin-bottom:0px"
+          <el-switch
+            style="margin-bottom:0px"
             v-model="menuOnly"
             active-text="仅显示菜单"
-            inactive-text=""
-            @change="getPermissions()">
-            </el-switch>
+            inactive-text
+            @change="getPermissions()"
+          ></el-switch>
         </el-col>
-        
+
         <el-col :span="9">
           <el-button type="primary" @click="addDialogFormVisible=true">新增顶级权限</el-button>
         </el-col>
-       
       </el-row>
       <el-table
         :data="tableData.filter(data => !filterText || data.name.toLowerCase().includes(filterText.toLowerCase()))"
@@ -42,10 +42,7 @@
         </el-table-column>
         <el-table-column prop="hierarchyCode" label="权限点" sortable width="180"></el-table-column>
         <el-table-column prop="path" label="地址" sortable width="180"></el-table-column>
-        <el-table-column
-          prop="type"
-          label="类型"
-        >
+        <el-table-column prop="type" label="类型">
           <template slot-scope="scope">
             <el-tag type="success" v-show="scope.row.type==0">菜单</el-tag>
             <el-tag type="info" v-show="scope.row.type==1">功能</el-tag>
@@ -61,8 +58,8 @@
             >新增子节点</el-button>
             <el-button type="text" @click="openModifyDialogue(scope.row.id)">修改</el-button>
             <el-button type="text" v-show="ifEnd(scope.row)" @click="remove(scope.row.id)">删除</el-button>
-            <el-button type="text" @click="moveUp(scope.row.id)">上移</el-button>
-            <el-button type="text" @click="moveDown(scope.row.id)">下移</el-button>
+            <el-button type="text" v-show="scope.row.type==0" @click="moveUp(scope.row.id,scope.row.type)">上移</el-button>
+            <el-button type="text" v-show="scope.row.type==0" @click="moveDown(scope.row.id,scope.row.type)">下移</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -220,10 +217,10 @@ export default {
     },
     editPermission() {},
     async getPermissions() {
-        let url = "permissions"
-        if(this.menuOnly){
-            url +="?scope=menu";
-        }
+      let url = "permissions";
+      if (this.menuOnly) {
+        url += "?scope=menu";
+      }
       const { data: result } = await this.$http.get(url);
       if (result.code != 0) {
         this.$message.error(result.message);
@@ -242,27 +239,35 @@ export default {
       }
       return "";
     },
-    async moveUp(id) {
+    async moveUp(id, type) {
       const { data: result } = await this.$http.put(
         `/permission/${id}/position?action=up`
       );
       if (result.code == 0) {
-        this.getPermissions();
+        if (type == 0) {
+          window.location.reload();
+        } else {
+          this.getPermissions();
+        }
       }
     },
-    async moveDown(id) {
+    async moveDown(id, type) {
       const { data: result } = await this.$http.put(
         `/permission/${id}/position?action=down`
       );
       if (result.code == 0) {
-        this.getPermissions();
+        if (type == 0) {
+          window.location.reload();
+        } else {
+          this.getPermissions();
+        }
       }
     }
   },
 
   data() {
     return {
-      menuOnly:false,
+      menuOnly: true,
       filterText: "",
       addForm: {
         name: "",
